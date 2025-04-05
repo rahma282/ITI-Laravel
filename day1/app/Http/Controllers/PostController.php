@@ -19,16 +19,16 @@ class PostController extends Controller
     }
     public function store(Request $request){
          dd($request->all());
-        return to_route('posts.create');
+         //validations
     }
-    public function show(){
+    public function show($id){
         $post = [
-            'title' => 'Hello Post',
-            'description' => 'this is some post',
+            'title' => 'hi Post',
+            'description' => 'this post about laravel lab 1',
             'user' => [
-                'name' => 'Ahmed',
-                'email' => 'ahmed@gmail.com',
-                'created_at' => '2024-10-01 10:00:00'
+                'name' => 'rahma',
+                'email' => 'rahma@gmail.com',
+                'created_at' => '2025-4-4 10:00:00'
             ]
         ];
         return view('posts.show',[
@@ -45,5 +45,11 @@ class PostController extends Controller
     }
     public function edit(Request $request, $id){
         dd($request->all());
+        //validation
+    }
+    public function destroy($id)
+    {
+       dd("Deleted Post with ID: $id");
+       //array filter
     }
 }

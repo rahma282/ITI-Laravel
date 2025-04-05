@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="en" class="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title>Posts Table</title>
-</head>
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
+<x-layout>
     <div class="container mx-auto p-6">
         <div class="flex justify-between items-center mb-4">
             <h1 class="text-2xl font-bold">All Posts</h1>
@@ -30,10 +22,17 @@
                             <td class="px-4 py-2">{{ $post['title'] }}</td>
                             <td class="px-4 py-2">{{ $post['posted_by'] }}</td>
                             <td class="px-4 py-2">{{ $post['created_at'] }}</td>
-                            <td class="px-4 py-2">
+                            <td class="px-4 py-2 space-x-2">
                                 <a href="{{ route('posts.show', $post['id']) }}" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">View</a>
-                                <a href="{{ route('posts.editPage', $post['id']) }}"  class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">Edit</a>
-                                <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Delete</button>
+                                <a href="{{ route('posts.editPage', $post['id']) }}" class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">Edit</a>
+                                <form action="{{ route('posts.destroy', $post['id']) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                                        onclick="return confirm('Are you sure you want to delete this post?')">
+                                        Delete
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
@@ -41,5 +40,4 @@
             </table>
         </div>
     </div>
-</body>
-</html>
+</x-layout>
