@@ -11,12 +11,16 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::all()->map(function ($post) {
+        $posts = Post::with('user')->paginate(5);
+
+        $posts->getCollection()->transform(function ($post) {
             $post->formatted_date = Carbon::parse($post->created_at)->format('d-m-y');
             return $post;
         });
+
         return view('posts.index', compact('posts'));
     }
+
     public function create()
     {
         $users = User::all();

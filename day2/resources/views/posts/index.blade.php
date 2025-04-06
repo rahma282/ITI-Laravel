@@ -2,7 +2,8 @@
     <div class="container mx-auto p-6">
         <div class="flex justify-between items-center mb-4">
             <h1 class="text-2xl font-bold">All Posts</h1>
-            <a href="{{ route('posts.create') }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Create Post</a>
+            <a href="{{ route('posts.create') }}"
+                class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Create Post</a>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full border-collapse bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
@@ -21,10 +22,12 @@
                             <td class="px-4 py-2">{{ $post->id }}</td>
                             <td class="px-4 py-2">{{ $post->title }}</td>
                             <td class="px-4 py-2">{{ $post->user ? $post->user->name : 'Not Found' }}</td>
-                            <td class="px-4 py-2">{{ $post->created_at }}</td>
+                            <td class="px-4 py-2">{{ $post->formatted_date }}</td>
                             <td class="px-4 py-2 space-x-2">
-                                <a href="{{ route('posts.show', $post->id) }}" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">View</a>
-                                <a href="{{ route('posts.edit', $post->id) }}" class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">Edit</a>
+                                <a href="{{ route('posts.show', $post->id) }}"
+                                    class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">View</a>
+                                <a href="{{ route('posts.edit', $post->id) }}"
+                                    class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">Edit</a>
                                 <form action="{{ route('posts.destroy', $post->id) }}" method="POST" class="inline">
                                     @csrf
                                     @method('DELETE')
@@ -39,5 +42,10 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="mt-4">
+            {{ $posts->links() }}
+        </div>
+
     </div>
 </x-layout>
