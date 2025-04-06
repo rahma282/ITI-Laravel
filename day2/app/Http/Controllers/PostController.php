@@ -1,73 +1,70 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Post;
+use App\Models\User;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class PostController extends Controller
 {
-    public function index() 
+    public function index()
     {
-        $posts = [
-            ['id' => 1 , 'title' => 'First Post', 'posted_by' => 'Ahmed', 'created_at' => '2025-11-10 10:00:00'],
-            ['id' => 2 , 'title' => 'Second Post','posted_by' => 'Rahma', 'created_at' => '2025-12-10 10:00:00'],
-            ['id' =>3 , 'title' => 'Third Post','posted_by' => 'Mohamed', 'created_at' => '2025-13-10 10:00:00'],
-        ];
-
-        return view('posts.index', ['posts' => $posts]);
+        $posts = Post::all()->map(function ($post) {
+            $post->formatted_date = Carbon::parse($post->created_at)->format('d-m-y');
+            return $post;
+        });
+        return view('posts.index', compact('posts'));
     }
-
-    public function show()
-    {
-        $post = [
-            'title' => 'Greeting Post',
-            'description' => 'a new post',
-            'user' => [
-                'name' => 'Nouran',
-                'email' => 'Nouran@gmail.com',
-                'created_at' => '2024-10-01 10:00:00'
-            ]
-        ];
-
-        return view('posts.show',[
-            'post' => $post,
-        ]);
-    }
-
     public function create()
     {
-        return view('posts.create');
-    }
+        $users = User::all();
+        //dd($users);
+        return view('posts.create', compact('users'));
 
+    }
     public function store(Request $request)
     {
-        dd($request->all());
+        //dd($request->all());
+        Post::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'user_id' => $request->creator
+        ]);
+
         return to_route('posts.index');
     }
 
-
-    public function edit($id)
+    public function show($id)
     {
-        $post = [
-            'id' => $id,
-            'title' => 'Sample Post Title',
-            'description' => 'Sample Post Description',
-            'posted_by' => 'Noran'
-        ];
-
-        return view('posts.edit', ['post' => $post]);
+        $post = Post::findOrFail($id);
+        return view('posts.show', compact('post'));
     }
 
-    public function update(Request $request, $id)
+    public function edit(Post $post)
     {
-        dd('Updated Post', $id, $request->all());
+        $users = User::all();
+        return view('posts.edit', compact('post', 'users'));
+
+    }
+
+    public function update(Request $request, Post $post)
+    {
+
+        $post->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'user_id' => $request->creator
+        ]);
+        //dd($request->creator);
+        //dd($post);
         return to_route('posts.index');
     }
-
-    public function destroy($id)
-    {
-        dd("Deleted Post with ID: $id");
-        return to_route('posts.index');
+    public function destroy(Post $post)
+    { {
+            $post->delete();
+            return to_route('posts.index');
+        }
     }
-
 }
