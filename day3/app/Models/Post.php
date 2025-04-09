@@ -15,6 +15,16 @@ class Post extends Model
     ];
     // can you  usre it $guarded if you had a property you dont want to add by your own
 
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'title'
+            ]
+        ];
+    }
+
+
     public function user()
     {
         return $this->belongsTo(User::class);

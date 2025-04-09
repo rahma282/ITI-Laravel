@@ -24,5 +24,9 @@ return new class extends Migration
     public function down(): void
     {
         //add that when you delete remove colunm of users_id and drop constrain
+        Schema::table('posts', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+            $table->dropColumn('user_id');
+        });
     }
 };

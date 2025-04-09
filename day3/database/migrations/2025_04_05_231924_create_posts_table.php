@@ -9,15 +9,17 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->string('slug')->unique();
             $table->string('title');
             $table->text('description');
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.
@@ -25,5 +27,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('Posts');
+        Schema::table('posts', function (Blueprint $table) {
+            $table->dropColumn('slug');
+        });
     }
 };

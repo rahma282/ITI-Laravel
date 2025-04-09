@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Comment;
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -29,7 +31,7 @@ class PostController extends Controller
         return view('posts.create', compact('users'));
 
     }
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
         //validation
         //dd($request->all());
@@ -56,7 +58,7 @@ class PostController extends Controller
 
     }
 
-    public function update(Request $request, Post $post)
+    public function update(UpdatePostRequest $request, Post $post)
     {
 
         $post->update([

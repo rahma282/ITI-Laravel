@@ -72,7 +72,7 @@ class PostController extends Controller
     {
         Comment::where('commentable_id', $post->id)
         ->where('commentable_type', Post::class)->delete();
-
+        //on cascade
         $post->delete();
 
         return to_route('posts.index');

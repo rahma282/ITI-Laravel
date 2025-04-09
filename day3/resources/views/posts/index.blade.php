@@ -20,7 +20,7 @@
                     @foreach ($posts as $post)
                         <tr class="border-b dark:border-gray-600">
                             <td class="px-4 py-2">{{ $post->id }}</td>
-                            <td class="px-4 py-2">{{ $post->title }}</td>
+                            <td class="px-4 py-2">{{ $post->slug }}</td>
                             <td class="px-4 py-2">{{ $post->user ? $post->user->name : 'Not Found' }}</td>
                             <td class="px-4 py-2">{{ $post->formatted_date }}</td>
                             <td class="px-4 py-2 space-x-2">
