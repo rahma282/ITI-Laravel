@@ -13,7 +13,7 @@ use App\Models\Post;
 class PruneOldPostsJob implements ShouldQueue
 {
     use Queueable;
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, SerializesModels;
 
     /**
      * Create a new job instance.
@@ -28,16 +28,11 @@ class PruneOldPostsJob implements ShouldQueue
      */
     public function handle(): void
     {
-        \Log::info("🧹 PruneOldPostsJob is running...");
+        //file_put_contents("log.txt","hi");
+        $twoYearsAgo = Carbon::now()->subYears(2);
 
-        $twoYearsAgo = now()->subYears(2);
-        $oldPosts = Post::where('created_at', '<', $twoYearsAgo)->get();
+        //Delete posts older than 2 years
+        Post::where('created_at', '<', $twoYearsAgo)->delete();
 
-        \Log::info("Found " . $oldPosts->count() . " old posts.");
-
-        foreach ($oldPosts as $post) {
-            \Log::info("Deleting post: " . $post->title);
-            $post->delete();
-        }
     }
 }
