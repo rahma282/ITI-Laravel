@@ -9,6 +9,8 @@ use App\Http\Requests\UpdatePostRequest;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -34,11 +36,17 @@ class PostController extends Controller
     public function store(StorePostRequest $request)
     {
         //validation
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('posts', 'public');
+        }
         //dd($request->all());
         Post::create([
             'title' => $request->title,
             'description' => $request->description,
-            'user_id' => $request->creator
+            'user_id' => $request->creator,
+            'slug' => Str::slug($request->title),
+            'image' => $imagePath
         ]);
 
         return to_route('posts.index');
@@ -60,11 +68,25 @@ class PostController extends Controller
 
     public function update(UpdatePostRequest $request, Post $post)
     {
+        $imagePath = $post->image;
+
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($post->image && Storage::disk('public')->exists($post->image)) {
+                Storage::disk('public')->delete($post->image);
+            }
+
+            // Store new image
+            $imagePath = $request->file('image')->store('posts', 'public');
+        }
+
 
         $post->update([
             'title' => $request->title,
             'description' => $request->description,
-            'user_id' => $request->creator
+            'user_id' => $request->creator,
+            'slug' => Str::slug($request->title),
+            'image' => $imagePath,
         ]);
         //dd($request->creator);
         //dd($post);
@@ -73,7 +95,12 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         Comment::where('commentable_id', $post->id)
-        ->where('commentable_type', Post::class)->delete();
+            ->where('commentable_type', Post::class)->delete();
+
+        if ($post->image && Storage::disk('public')->exists($post->image)) {
+            Storage::disk('public')->delete($post->image);
+        }
+
 
         $post->delete();
 

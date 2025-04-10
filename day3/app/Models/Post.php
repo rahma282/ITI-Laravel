@@ -12,6 +12,8 @@ class Post extends Model
         'title',
         'description',
         'user_id',
+        'slug',
+        'image',
     ];
     // can you  usre it $guarded if you had a property you dont want to add by your own
 
