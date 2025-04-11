@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Comment;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -16,7 +17,8 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::with('user')->paginate(5);
+        $posts = Post::withTrashed()->with('user')->paginate(5);
+
 
         $posts->getCollection()->transform(function ($post) {
             $post->formatted_date = Carbon::parse($post->created_at)->format('d-m-y');
@@ -56,6 +58,10 @@ class PostController extends Controller
     {
         $post = Post::with('comments.user')->findOrFail($id);
         $users = User::all();
+        if (request()->ajax()) {
+            return response()->json($post);
+        }
+
         return view('posts.show', compact('post', 'users'));
     }
 
@@ -106,4 +112,11 @@ class PostController extends Controller
 
         return to_route('posts.index');
     }
+    public function restore($id)
+{
+    $post = Post::withTrashed()->findOrFail($id);
+    $post->restore();
+
+    return to_route('posts.index')->with('success', 'Post restored successfully.');
+}
 }

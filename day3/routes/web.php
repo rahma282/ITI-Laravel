@@ -27,4 +27,5 @@ Route::middleware('auth')->group(function () {
 });
 Route::resource('posts', PostController::class);
 Route::resource('comments', CommentController::class);
+Route::post('/posts/{id}/restore', [PostController::class, 'restore'])->name('posts.restore');
 require __DIR__.'/auth.php';

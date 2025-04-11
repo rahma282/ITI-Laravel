@@ -31,8 +31,12 @@ class PruneOldPostsJob implements ShouldQueue
         //file_put_contents("log.txt","hi");
         $twoYearsAgo = Carbon::now()->subYears(2);
 
-        //Delete posts older than 2 years
-        Post::where('created_at', '<', $twoYearsAgo)->delete();
+        Post::where('created_at', '<=', $twoYearsAgo)->each(function ($post) {
+            // Delete associated comments first
+            $post->comments()->delete();
+            // Then delete the post
+            $post->delete();
+        });
 
     }
 }
